@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <div id="header" class="container">
+        <header class="form-group">
+            <h1>CodingDojo wall</h1>
+            <p>hello {{ user.first_name }}</p>
+            <a href="/logout" class="text-justify">Log Out</a>
+        </header>
+        <hr>
+        <p>Post a Message</p>
+        <form class="form-group" method="post" action="/make_post">
+            {% csrf_token %}
+            <textarea class="form-control" name="post" id="messages" cols="100" rows="5"></textarea>
+            <button type="submit" class="btn btn-primary">Shoot a Message</button>
+        </form>
+        <div id="message_board" >
+            {% for post in allposts %}
+            <div class="jumbotron">
+                <p>{{post.user.first_name}} {{post.user.last_name}} {{post.created_at}}</p>
+                <ul>
+                    <li><strong>{{post.post}}</strong></li>
+                    <ul>
+                        <li>
+                        {% for comment in post.comment_on_post.all %}
+                            <p>{{ comment.users_comments.first_name }} {{ comment.users_comments.last_name }}</p>
+                            <p>{{ comment.comment}}</p>
+                        {% endfor %}
+
+                        </li>
+                    </ul>
+                </ul>
+                <!-- <p>{{post.post}}</p> -->
+
+                <!-- {% for comment in post.comment_on_post.all %}
+                    <p>{{ comment.comment}}</p>
+                {% endfor %} -->
+                
+            <a class="btn btn-danger" href="/delete_post/{{post.id}}">Delete</a>
+
+            <form class="form-group" method="post"
+             action="/make_comment/{{post.id}}"> 
+                {% csrf_token %}
+                <textarea class="form-control" name="comment" id="comment" cols="10" rows="3"></textarea>
+                <button type="submit" class="btn btn-success">Shoot a comment</button>
+                
+            </form>
+                
+            </div>
+            {% endfor %}
+           
+        </div>
+    </div>
+</body>
+</html>
